@@ -1,0 +1,201 @@
+unit Valida;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls;
+
+type
+  TFrmValida = class(TForm)
+    EdtIP: TEdit;
+    EdtUsuario: TEdit;
+    EdtSenha: TEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    BtnConectar: TButton;
+    procedure BtnConectarClick(Sender: TObject);
+  private
+    procedure Login;
+    function TestarConexao(const AppPath, IP, Usuario, Senha: string): Boolean;
+  public
+
+  procedure RunPlinkCommand;
+
+  end;
+
+var
+  FrmValida: TFrmValida;
+
+implementation
+
+{$R *.dfm}
+
+uses Comando;
+
+procedure RunPlinkCommand(const AppPath, Args: string; Output: TStrings);
+var
+  Security: TSecurityAttributes;
+  ReadPipe, WritePipe: THandle;
+  StartInfo: TStartupInfo;
+  ProcInfo: TProcessInformation;
+  Buffer: array[0..1023] of AnsiChar;
+  BytesRead: DWORD;
+begin
+  Security.nLength := SizeOf(TSecurityAttributes);
+  Security.bInheritHandle := True;
+  Security.lpSecurityDescriptor := nil;
+
+  if CreatePipe(ReadPipe, WritePipe, @Security, 0) then
+  begin
+    FillChar(StartInfo, SizeOf(TStartupInfo), 0);
+    StartInfo.cb := SizeOf(TStartupInfo);
+    StartInfo.hStdOutput := WritePipe;
+    StartInfo.hStdError := WritePipe;
+    StartInfo.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
+    StartInfo.wShowWindow := SW_HIDE;
+
+    if CreateProcess(PChar(AppPath), PChar(AppPath + ' ' + Args), nil, nil, True, 0, nil, nil, StartInfo, ProcInfo) then
+    begin
+      CloseHandle(WritePipe);
+      repeat
+        BytesRead := 0;
+        ReadFile(ReadPipe, Buffer, SizeOf(Buffer) - 1, BytesRead, nil);
+        if BytesRead > 0 then
+        begin
+          Buffer[BytesRead] := #0;
+          Output.Text := Output.Text + String(Buffer);
+        end;
+      until BytesRead = 0;
+
+      WaitForSingleObject(ProcInfo.hProcess, INFINITE);
+      CloseHandle(ProcInfo.hProcess);
+      CloseHandle(ProcInfo.hThread);
+    end
+    else
+    begin
+      Output.Add('Erro ao criar processo.');
+      CloseHandle(WritePipe);
+    end;
+    CloseHandle(ReadPipe);
+  end
+  else
+    Output.Add('Erro ao criar pipe.');
+end;
+
+procedure TFrmValida.BtnConectarClick(Sender: TObject);
+var
+  AppPath, Args: string;
+  OutputList: TStringList;
+begin
+  // Validação dos campos
+  if Trim(EdtUsuario.Text) = '' then
+  begin
+    MessageDlg('Preencha o usuário', mtInformation, [mbOK], 0);
+    EdtUsuario.SetFocus;
+    Exit;
+  end;
+
+  if Trim(EdtSenha.Text) = '' then
+  begin
+    MessageDlg('Preencha a senha', mtInformation, [mbOK], 0);
+    EdtSenha.SetFocus;
+    Exit;
+  end;
+
+  if Trim(EdtIP.Text) = '' then
+  begin
+    MessageDlg('Preencha o IP', mtInformation, [mbOK], 0);
+    EdtIP.SetFocus;
+    Exit;
+  end;
+
+  // Caminho do plink
+  AppPath := ExtractFilePath(ParamStr(0)) + 'plink.exe';
+
+  // Validação da conexão
+  if not TestarConexao(AppPath, EdtIP.Text, EdtUsuario.Text, EdtSenha.Text) then
+  begin
+    ShowMessage('Erro ao conectar. Verifique IP, usuário ou senha.');
+    Exit;
+  end;
+
+  // Se conexão válida, segue com o login e execução do comando
+  Login;
+
+end;
+
+procedure TFrmValida.Login;
+begin
+  frmcomando.ShowModal;
+end;
+
+procedure TFrmValida.unPlinkCommand(const AppPath, Args: string; Output: TStrings);
+var
+  Security: TSecurityAttributes;
+  ReadPipe, WritePipe: THandle;
+  StartInfo: TStartupInfo;
+  ProcInfo: TProcessInformation;
+  Buffer: array[0..1023] of AnsiChar;
+  BytesRead: DWORD;
+begin
+  Security.nLength := SizeOf(TSecurityAttributes);
+  Security.bInheritHandle := True;
+  Security.lpSecurityDescriptor := nil;
+
+  if CreatePipe(ReadPipe, WritePipe, @Security, 0) then
+  begin
+    FillChar(StartInfo, SizeOf(TStartupInfo), 0);
+    StartInfo.cb := SizeOf(TStartupInfo);
+    StartInfo.hStdOutput := WritePipe;
+    StartInfo.hStdError := WritePipe;
+    StartInfo.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
+    StartInfo.wShowWindow := SW_HIDE;
+
+    if CreateProcess(PChar(AppPath), PChar(AppPath + ' ' + Args), nil, nil, True, 0, nil, nil, StartInfo, ProcInfo) then
+    begin
+      CloseHandle(WritePipe);
+      repeat
+        BytesRead := 0;
+        ReadFile(ReadPipe, Buffer, SizeOf(Buffer) - 1, BytesRead, nil);
+        if BytesRead > 0 then
+        begin
+          Buffer[BytesRead] := #0;
+          Output.Text := Output.Text + String(Buffer);
+        end;
+      until BytesRead = 0;
+
+      WaitForSingleObject(ProcInfo.hProcess, INFINITE);
+      CloseHandle(ProcInfo.hProcess);
+      CloseHandle(ProcInfo.hThread);
+    end
+    else
+    begin
+      Output.Add('Erro ao criar processo.');
+      CloseHandle(WritePipe);
+    end;
+    CloseHandle(ReadPipe);
+  end
+  else
+    Output.Add('Erro ao criar pipe.');
+end;
+
+function TFrmValida.TestarConexao(const AppPath, IP, Usuario, Senha: string): Boolean;
+var
+  OutputList: TStringList;
+  Args: string;
+begin
+  Result := False;
+  OutputList := TStringList.Create;
+  try
+    Args := Format('-ssh -batch %s@%s -pw %s echo OK', [Usuario, IP, Senha]);
+    RunPlinkCommand(AppPath, Args, OutputList);
+    Result := OutputList.Text.ToLower.Contains('ok');
+  finally
+    OutputList.Free;
+  end;
+end;
+
+end.
+

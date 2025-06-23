@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2025/03/17 18:43:54.000.084,=C:\Users\Pichau\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>2025/04/12 13:34:24.000.990,=C:\Users\Pichau\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>2025/04/12 14:05:01.000.701,C:\Componentes\Componentes\Valida harwarder\Valida.dfm=C:\Users\Pichau\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit2.dfm</Transaction>
+    <Transaction>2025/04/12 14:05:01.000.701,C:\Componentes\Componentes\Valida harwarder\Valida.pas=C:\Users\Pichau\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>2025/04/12 14:09:05.000.642,C:\Componentes\Componentes\Valida harwarder\Project1.dproj=C:\Users\Pichau\OneDrive\Documentos\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2025/04/22 14:53:52.000.958,=C:\Componentes\Componentes\Validaharwarder\Unit1.pas</Transaction>
+    <Transaction>2025/04/22 15:02:59.000.445,C:\Componentes\Componentes\Validaharwarder\Comando.pas=C:\Componentes\Componentes\Validaharwarder\Unit1.pas</Transaction>
+    <Transaction>2025/04/22 15:02:59.000.445,C:\Componentes\Componentes\Validaharwarder\Comando.dfm=C:\Componentes\Componentes\Validaharwarder\Unit1.dfm</Transaction>
+  </Transactions>
+</BorlandProject>

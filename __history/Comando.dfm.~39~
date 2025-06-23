@@ -1,0 +1,122 @@
+object frmcomando: Tfrmcomando
+  Left = 0
+  Top = 0
+  Caption = 'comando'
+  ClientHeight = 656
+  ClientWidth = 932
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  OnCreate = FormCreate
+  OnShow = FormShow
+  TextHeight = 15
+  object Comando: TLabel
+    Left = 49
+    Top = 19
+    Width = 53
+    Height = 15
+    Caption = 'Comando'
+  end
+  object memoResultado: TMemo
+    Left = 49
+    Top = 143
+    Width = 530
+    Height = 448
+    HideSelection = False
+    Lines.Strings = (
+      'memoResultado')
+    TabOrder = 0
+    OnChange = memoResultadoChange
+    OnKeyPress = memoResultadoKeyPress
+  end
+  object EdtComando: TEdit
+    Left = 49
+    Top = 40
+    Width = 530
+    Height = 23
+    TabOrder = 1
+  end
+  object BtnExecutar: TButton
+    Left = 504
+    Top = 112
+    Width = 75
+    Height = 25
+    Caption = 'Executar'
+    TabOrder = 2
+    OnClick = BtnExecutarClick
+  end
+  object btnLSUSB: TButton
+    Left = 664
+    Top = 40
+    Width = 193
+    Height = 41
+    Caption = 'lsusb'
+    TabOrder = 3
+    OnClick = btnLSUSBClick
+  end
+  object btnUSBDevi: TButton
+    Left = 664
+    Top = 112
+    Width = 193
+    Height = 41
+    Caption = 'usb-devices'
+    TabOrder = 4
+    OnClick = btnUSBDeviClick
+  end
+  object btnplacamae: TButton
+    Left = 664
+    Top = 328
+    Width = 193
+    Height = 41
+    Caption = 'placa-m'#227'e'
+    TabOrder = 5
+    OnClick = btnplacamaeClick
+  end
+  object btnProcessador: TButton
+    Left = 664
+    Top = 256
+    Width = 193
+    Height = 41
+    Caption = 'processador'
+    TabOrder = 6
+    OnClick = btnProcessadorClick
+  end
+  object btnKill: TButton
+    Left = 664
+    Top = 416
+    Width = 193
+    Height = 41
+    Caption = 'Fechar PDV'
+    TabOrder = 7
+    OnClick = btnKillClick
+  end
+  object btnfixada: TButton
+    Left = 664
+    Top = 183
+    Width = 193
+    Height = 42
+    Caption = 'porta fixada'
+    TabOrder = 8
+    OnClick = btnfixadaClick
+  end
+  object btnLimpar: TButton
+    Left = 49
+    Top = 112
+    Width = 75
+    Height = 25
+    Caption = 'Limpar'
+    TabOrder = 9
+    OnClick = btnLimparClick
+  end
+  object btnSalvar: TButton
+    Left = 504
+    Top = 605
+    Width = 75
+    Height = 25
+    Caption = 'Salvar'
+    TabOrder = 10
+  end
+end
